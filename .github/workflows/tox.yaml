@@ -19,10 +19,9 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-          cache: 'pip'  # Cache pip dependencies
-          cache-dependency-path: |
-            requirements*.txt
+          python-version: "3.10"
+          cache: "pip"  # Cache pip dependencies
+          cache-dependency-path: "requirements*.txt"
       - name: Install dependencies
         run: |
           echo "::group::Begin snap install"
