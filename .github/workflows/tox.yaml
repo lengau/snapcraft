@@ -81,7 +81,7 @@ jobs:
       - name: Setup Tox environments
         run: tox run-parallel --parallel auto --parallel-no-spinner --parallel-live -e test-${{ matrix.tox_python }},test-legacy-${{ matrix.tox_python }} --notest
       - name: Test with tox
-        run: tox run --skip-pkg-install --result-json results/tox-${{ matrix.platform }}.json -e test-${{ matrix.tox_python }},test-legacy-${{ matrix.tox_python }}
+        run: tox --no-provision run --skip-pkg-install --result-json results/tox-${{ matrix.platform }}.json -e test-${{ matrix.tox_python }},test-legacy-${{ matrix.tox_python }}
       - name: Upload code coverage
         uses: codecov/codecov-action@v3
         with:
