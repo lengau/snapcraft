@@ -34,17 +34,18 @@ jobs:
           echo "::group::apt-get install..."
           sudo apt-get install --yes libapt-pkg-dev libyaml-dev xdelta3
           echo "::endgroup::"
-          echo "::group::pip install"
-          python -m pip install 'tox<5.0' tox-gh
-          echo "::endgroup::"
+#          echo "::group::pip install"
+#          python -m pip install 'tox<5.0' tox-gh
+#          echo "::endgroup::"
           echo "::group::Create virtual environments for linting processes."
-          tox run -m lint --notest
+          tox4 run -m lint --notest
           echo "::endgroup::"
           echo "::group::Wait for snap to complete"
           snap watch --last=install
           echo "::endgroup::"
       - name: Run Linters
         run: |
+          source .tox/.tox/bin/activate  # Use provisioned tox
           tox --no-provision run --skip-pkg-install -m lint
   tests:
     strategy:
