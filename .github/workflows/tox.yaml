@@ -35,11 +35,11 @@ jobs:
           echo "::group::apt-get install..."
           sudo apt-get install --yes libapt-pkg-dev libyaml-dev xdelta3
           echo "::endgroup::"
-#          echo "::group::pip install"
-#          python -m pip install 'tox<5.0' tox-gh
-#          echo "::endgroup::"
+          echo "::group::pip install"
+          python -m pip install 'tox<5.0'
+          echo "::endgroup::"
           echo "::group::Create virtual environments for linting processes."
-          tox4 run -m lint --notest
+          tox run -m lint --notest
           echo "::endgroup::"
           echo "::group::Wait for snap to complete"
           snap watch --last=install
