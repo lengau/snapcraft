@@ -8,6 +8,7 @@ on:
 
 jobs:
   github-release:
+    if: false
     runs-on: [self-hosted]
     permissions:
       contents: write

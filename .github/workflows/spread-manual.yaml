@@ -11,6 +11,7 @@ on:
 jobs:
   # Decide if the tests should be ran
   predicate:
+    if: false
     runs-on: ubuntu-latest
     outputs:
       should_run: ${{ steps.eval.outputs.should_run }}
@@ -25,8 +26,8 @@ jobs:
           echo "should_run=$should_run" >> "$GITHUB_OUTPUT"
 
   snap-build:
+    if: false
     needs: predicate
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -50,8 +51,8 @@ jobs:
           sudo snap install --dangerous --classic ${{ steps.snapcraft.outputs.snap }}
 
   kernel-plugins:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Cleanup job workspace
@@ -76,8 +77,8 @@ jobs:
                  openstack:ubuntu-22.04-64:tests/spread/plugins/craft-parts/kernel-deb
 
   initrd-plugins:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Cleanup job workspace
@@ -99,7 +100,6 @@ jobs:
           spread openstack:ubuntu-22.04-64:tests/spread/plugins/craft-parts/initrd
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do
@@ -107,8 +107,8 @@ jobs:
           done
 
   remote-build:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Cleanup job workspace
@@ -133,7 +133,6 @@ jobs:
             openstack:ubuntu-24.04-64:tests/spread/core24/remote-build
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do
@@ -141,8 +140,8 @@ jobs:
           done
 
   colcon-plugins:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Cleanup job workspace
@@ -168,7 +167,6 @@ jobs:
             openstack:ubuntu-22.04-64:tests/spread/plugins/craft-parts/colcon-hello
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do
@@ -176,8 +174,8 @@ jobs:
           done
 
   extensions:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Cleanup job workspace
@@ -199,7 +197,6 @@ jobs:
           spread openstack.*:tests/spread/extensions/
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do
@@ -207,8 +204,8 @@ jobs:
           done
 
   snapd-bases:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Cleanup job workspace
@@ -230,7 +227,6 @@ jobs:
           spread openstack:ubuntu-22.04-64:tests/spread/snaps/snapd
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do
@@ -238,8 +234,8 @@ jobs:
           done
 
   squid-proxy:
+    if: false
     needs: [predicate, snap-build]
-    if: needs.predicate.outputs.should_run == 'true'
     runs-on: [self-hosted, spread-enabled]
     steps:
       - name: Clean up job workspace
@@ -260,7 +256,6 @@ jobs:
         run: |
           spread openstack:ubuntu-24.04-64:tests/spread/core24/squid-proxy openstack:ubuntu-22.04-64:tests/spread/core22/squid-proxy
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do

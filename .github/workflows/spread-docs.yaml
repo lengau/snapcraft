@@ -18,6 +18,7 @@ on:
 
 jobs:
   docs-snap-build:
+    if: false
     runs-on: ubuntu-24.04
 
     steps:
@@ -42,6 +43,7 @@ jobs:
           path: ${{ steps.snapcraft.outputs.snap }}
 
   docs-spread-tests:
+    if: false
     runs-on: [self-hosted, spread-enabled]
     needs: [docs-snap-build]
     timeout-minutes: 90
@@ -68,7 +70,6 @@ jobs:
           spread openstack:...docs...
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do

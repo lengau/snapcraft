@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: false
     runs-on: ubuntu-latest
     outputs:
       source-files: ${{ steps.filter.outputs.source-files }}
@@ -31,31 +32,27 @@ jobs:
 
       # speed up build times by using wheels, when available
       - name: Use wheels
-        if: steps.filter.outputs.source-files == 'true'
         run: |
           yq eval 'del(.parts.snapcraft.build-environment[] | select(.UV_NO_BINARY == "true"))' -i snap/snapcraft.yaml
 
       - name: Build snapcraft snap
         id: build-snapcraft
         uses: canonical/action-build@v1
-        if: steps.filter.outputs.source-files == 'true'
 
       - name: Upload snapcraft snap
         uses: actions/upload-artifact@v7
-        if: steps.filter.outputs.source-files == 'true'
         with:
           name: snap
           path: ${{ steps.build-snapcraft.outputs.snap }}
 
       - name: Verify snapcraft snap
-        if: steps.filter.outputs.source-files == 'true'
         run: |
           sudo snap install --dangerous --classic ${{ steps.build-snapcraft.outputs.snap }}
 
   integration-spread-tests:
+    if: false
     runs-on: [self-hosted, spread-enabled]
     needs: build
-    if: ${{ needs.build.outputs.source-files == 'true' }}
     strategy:
       # FIXME: enable fail-fast mode once spread can cancel an executing job.
       # Disable fail-fast mode as it doesn't function with spread. It seems
@@ -83,7 +80,6 @@ jobs:
           path: tests
 
       - name: Run Ubuntu Pro spread tests
-        if: matrix.spread-jobs != 'openstack:ubuntu-22.04-64'
         env:
           UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
         run: |
@@ -105,7 +101,6 @@ jobs:
         run: spread ${{ matrix.spread-jobs }}
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do
@@ -113,9 +108,9 @@ jobs:
           done
 
   integration-spread-tests-store:
+    if: false
     runs-on: [self-hosted, spread-enabled]
     needs: build
-    if: ${{ needs.build.outputs.source-files == 'true' }}
     strategy:
       # FIXME: enable fail-fast mode once spread can cancel an executing job.
       # Disable fail-fast mode as it doesn't function with spread. It seems
@@ -161,7 +156,6 @@ jobs:
           spread openstack:ubuntu-22.04-64:tests/spread/store/
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do

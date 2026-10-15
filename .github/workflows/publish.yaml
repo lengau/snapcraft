@@ -15,6 +15,7 @@ on:
 
 jobs:
   publish:
+    if: false
     strategy:
       matrix:
         runner:
@@ -66,7 +67,6 @@ jobs:
           fi
 
       - name: Publish feature branch to edge/${{ steps.vars.outputs.branch }}
-        if: steps.decisions.outputs.PUBLISH == 'true'
         uses: canonical/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
